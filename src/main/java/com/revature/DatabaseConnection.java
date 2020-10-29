@@ -24,10 +24,10 @@ public class DatabaseConnection {
             }
         }
 
-    Boolean submitSQL(String string, String... Values) {
+    Boolean submitSQL(String sqlString, String... Values) {
         try {
             connection.createStatement();
-            PreparedStatement preparedStatement = connection.prepareStatement(string);
+            PreparedStatement preparedStatement = connection.prepareStatement(sqlString);
             int val = 1;
             for (String str: Values){
                 preparedStatement.setString(val,str);
@@ -37,9 +37,26 @@ public class DatabaseConnection {
         }catch (SQLException e){
             System.err.println("Something went wrong");
             e.printStackTrace();
-
         }
         return false;
     }
+    ResultSet getResult(String sqlString,String... Values){
+        try{
+            connection.createStatement();
+            PreparedStatement preparedStatement = connection.prepareStatement(sqlString);
+            int val = 1;
+            for (String str: Values){
+                preparedStatement.setString(val,str);
+                val++;
+            }
+            return preparedStatement.executeQuery();
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+            System.exit(0);
+            return null;
+        }
+    }
+
 
 }

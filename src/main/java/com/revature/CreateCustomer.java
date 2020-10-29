@@ -1,5 +1,7 @@
 package com.revature;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Scanner;
 
 public class CreateCustomer {
@@ -9,21 +11,34 @@ public class CreateCustomer {
     private String email;
     private String phone;
     private String address;
+    DatabaseConnection db;
 
-    CreateCustomer(){
+    CreateCustomer() {
+        this.db = new DatabaseConnection();
         this.in = new Scanner(System.in);
-        this.username = getUsername();
-        this.password = getPassword();
-        this.email = getEmailAddress();
-        this.phone = getPhone();
-        this.address = getAddress();
+            this.username = getUsername();
+            this.password = getPassword();
+            this.email = getEmailAddress();
+            this.phone = getPhone();
+            this.address = getAddress();
+
     }
-    private String getUsername(){
+    private String getUsername() {
         System.out.println("------------");
         System.out.println("What would you like your username to be?");
         String user = in.nextLine();
-
-        return user;
+        int count = 0;
+        try {
+            count = getCount("Username",user);
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        if( count == 0){
+            return user;
+        }else{
+            System.out.println("Sorry, that username is taken. Please try another");
+            return getUsername();
+        }
     }
     private String getPassword(){
         System.out.println("------------");
@@ -46,31 +61,41 @@ public class CreateCustomer {
 
         return address;
     }
-    private String getEmailAddress(){
+    private String getEmailAddress() {
         System.out.println("------------");
         System.out.println("What is your email address?");
         String email = in.nextLine();
-
-        return email;
+        int count = 0;
+        try {
+            count = getCount("Email",email);
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        if( count == 0){
+            return email;
+        }else{
+            System.out.println("Sorry, that username is taken. Please try another");
+            return getAddress();
+        }
     }
     private boolean verifyPassword(){
         System.out.println("-----------");
         System.out.println("Please confirm your password to complete your registration");
-
         return new PasswordEncoder().confirmPass(in.nextLine(),password);
     }
     public void deployToDB(){
-        DatabaseConnection db = new DatabaseConnection();
         String SQL = "INSERT INTO Users.Customer\n" +
                 "        (Username, Password, Email, Phone, Address) VALUES (?,?,?,?,?)";
         if(verifyPassword()){
-            db.submitSQL(SQL,getStrArray());
+            db.submitSQL(SQL,username, password, email, phone, address);
         }else{
             System.out.println("Sorry, that password was not correct, or something else failed.");
         }
-
     }
-    private String[] getStrArray(){
-        return new String[]{username, password, email, phone, address};
+    private int getCount(String tableName, String value) throws SQLException {
+        System.out.println();
+        ResultSet rs = db.getResult(String.format("SELECT COUNT(*) FROM Users.Customer WHERE %s = ?;",tableName),value);
+        rs.next();
+        return rs.getInt("");
     }
 }
