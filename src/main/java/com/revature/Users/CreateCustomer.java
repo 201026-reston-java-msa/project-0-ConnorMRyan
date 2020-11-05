@@ -1,20 +1,20 @@
-package com.revature;
+package com.revature.Users;
 
-import java.sql.ResultSet;
+
+import com.revature.Utils.PasswordEncoder;
+
 import java.sql.SQLException;
 import java.util.Scanner;
 
-public class CreateCustomer {
+public class CreateCustomer implements UsersMethods {
     Scanner in;
     private String username;
     private String password;
     private String email;
     private String phone;
     private String address;
-    DatabaseConnection db;
 
     CreateCustomer() {
-        this.db = new DatabaseConnection();
         this.in = new Scanner(System.in);
             this.username = getUsername();
             this.password = getPassword();
@@ -74,8 +74,8 @@ public class CreateCustomer {
         if( count == 0){
             return email;
         }else{
-            System.out.println("Sorry, that username is taken. Please try another");
-            return getAddress();
+            System.out.println("Sorry, that email is taken. Please try another");
+            return getEmailAddress();
         }
     }
     private boolean verifyPassword(){
@@ -92,10 +92,5 @@ public class CreateCustomer {
             System.out.println("Sorry, that password was not correct, or something else failed.");
         }
     }
-    private int getCount(String tableName, String value) throws SQLException {
-        System.out.println();
-        ResultSet rs = db.getResult(String.format("SELECT COUNT(*) FROM Users.Customer WHERE %s = ?;",tableName),value);
-        rs.next();
-        return rs.getInt("");
-    }
+
 }
