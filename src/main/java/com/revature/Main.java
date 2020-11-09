@@ -3,6 +3,7 @@ package com.revature;
 
 import com.revature.Accounts.BankAccount;
 import com.revature.Users.Banker;
+import com.revature.Utils.Address;
 
 import java.sql.SQLException;
 
@@ -11,11 +12,8 @@ public class Main {
         //CreateCustomer testUser = new CreateCustomer();
         //testUser.deployToDB();
         //EditCustomer TestEdit = new EditCustomer(new Customer());
-
-        Banker banker = new Banker();
-        for (BankAccount ba : banker.getAccountsToVerify()) {
-            System.out.println(ba.getBalance());
-        }
+        Address address = new Address();
+        System.out.println(address);
 
 
     }
