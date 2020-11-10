@@ -8,12 +8,12 @@ import java.sql.SQLException;
 import java.util.Scanner;
 
 public class CreateBankAccount {
-    DatabaseConnection db = new DatabaseConnection();
+    DatabaseConnection db =  DatabaseConnection.getConnection();
     boolean jointAccount = false;
     Scanner in = new Scanner(System.in);
     int startingBalance = 0;
     Customer primaryCustomer;
-    Customer secondaryCustomer;
+    Customer secondaryCustomer = null;
     String[] ownerIDs;
     int OwnershipID;
     final int ROUTING_NO = 1231234567;
@@ -39,7 +39,12 @@ public class CreateBankAccount {
         primaryCustomer = new Customer().getCustomer();
 
         if(jointAccount){
-            secondaryCustomer = new Customer().getCustomer();
+            do {
+                secondaryCustomer = new Customer().getCustomer();
+                if(secondaryCustomer.getID() == primaryCustomer.getID()){
+                    System.out.println("Sorry, you seem to have logged in twice, please try again.");
+                }
+            }while (secondaryCustomer.getID() == primaryCustomer.getID());
         }
 
         ownerIDs = new String[]{Integer.toString(primaryCustomer.getID()), (secondaryCustomer != null) ? Integer.toString(secondaryCustomer.getID()) : "-1"};
@@ -55,11 +60,17 @@ public class CreateBankAccount {
         String SQL = "INSERT INTO Various.AccountOwners\n" +
                 "(PrimaryAccount,SecondaryAccount) " +
                 "VALUES (?,?)";
+        if(secondaryCustomer == null){
+            ownerIDs[1] = "-1";
+        }
         db.submitSQL(SQL, ownerIDs[0],ownerIDs[1]);
     }
     private int getOwnershipID(){
         try {
             String SQL = "SELECT OwnershipID FROM Various.AccountOwners WHERE PrimaryAccount = ? AND SecondaryAccount = ?;";
+            if(secondaryCustomer == null){
+                ownerIDs[1] = "-1";
+            }
             ResultSet rs = db.getResult(SQL, ownerIDs[0], ownerIDs[1]);
             rs.next();
             return rs.getInt("OwnershipID");

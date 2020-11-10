@@ -14,9 +14,10 @@ public class Customer extends User {
     Scanner in = new Scanner(System.in);
     DatabaseConnection db;
     private String username;
+    private String name;
     private int ID;
     public Customer(){
-        db = new DatabaseConnection();
+        db =  DatabaseConnection.getConnection();
     }
 
     @Override
@@ -44,10 +45,11 @@ public class Customer extends User {
         if(logIn()){
             return this;
         }else{
-
             return null;
         }
     }
+
+
 
     private void getUsername() {
         System.out.println("------------");

@@ -9,31 +9,32 @@ import java.sql.SQLException;
 import java.util.Scanner;
 
 public class CreateCustomer {
-    DatabaseConnection db;
-    Scanner in;
-    private String username;
-    private String password;
-    private String email;
-    private String phone;
-    private int address;
-    private String name;
-    private final String TABLE = "Users.Customer";
+    static DatabaseConnection db;
+    static Scanner in;
+    static private String username;
+    static private String password;
+    static private String email;
+    static private String phone;
+    static private int address;
+    static private String name;
+    static private final String TABLE = "Users.Customer";
 
-    public CreateCustomer() {
-        this.db = new DatabaseConnection();
-        this.in = new Scanner(System.in);
-        this.username = getUsername();
-        this.password = getPassword();
-        this.email = getEmailAddress();
-        this.name = getName();
-        this.phone = getPhone();
-        this.address = getAddress();
-        this.deployToDB();
-        db.close();
+     public CreateCustomer() {
+     }
+     static void createCustomer(){
+         db = DatabaseConnection.getConnection();
+         in = new Scanner(System.in);
+         username = getUsername();
+         password = getPassword();
+         email = getEmailAddress();
+         name = getName();
+         phone = getPhone();
+         address = getAddress();
+         deployToDB();
 
-    }
+     }
 
-    private String getUsername() {
+    private static String getUsername() {
         System.out.println("------------");
         System.out.println("What would you like your username to be?");
         String user = in.nextLine();
@@ -51,13 +52,13 @@ public class CreateCustomer {
         }
     }
 
-    private String getPassword() {
+    private static String getPassword() {
         System.out.println("------------");
         System.out.println("What would you like your password to be?");
         return new PasswordEncoder().hashPassword(in.nextLine());
     }
 
-    private String getPhone() {
+    private static String getPhone() {
         System.out.println("------------");
         System.out.println("What is your phone number?");
         String PhoneNo = in.nextLine();
@@ -65,19 +66,18 @@ public class CreateCustomer {
         return PhoneNo;
     }
 
-    private int getAddress() {
+    private static int getAddress() {
         System.out.println("------------");
         return new Address().getID();
+     }
 
-    }
-
-    private String getName() {
+    private static String getName() {
         System.out.println("------------");
         System.out.println("What is your name?");
         return in.nextLine();
     }
 
-    private String getEmailAddress() {
+    private static String getEmailAddress() {
         System.out.println("------------");
         System.out.println("What is your email address?");
         String email = in.nextLine();
@@ -95,13 +95,13 @@ public class CreateCustomer {
         }
     }
 
-    private boolean verifyPassword() {
+    private static boolean verifyPassword() {
         System.out.println("-----------");
         System.out.println("Please confirm your password to complete your registration");
         return new PasswordEncoder().confirmPass(in.nextLine(), password);
     }
 
-    public void deployToDB() {
+    public static void deployToDB() {
         String SQL = "INSERT INTO Users.Customer\n" +
                 "        (Username, Password, Email, Name, Phone, Address) VALUES (?,?,?,?,?,?)";
         if (verifyPassword()) {

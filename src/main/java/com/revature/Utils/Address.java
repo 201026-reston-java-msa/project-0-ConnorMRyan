@@ -26,7 +26,7 @@ public class Address {
 
     public Address() {
         try {
-            this.db = new DatabaseConnection();
+            this.db = DatabaseConnection.getConnection();
             setPostalCode();
             setStreetNumber();
             setStreetName();

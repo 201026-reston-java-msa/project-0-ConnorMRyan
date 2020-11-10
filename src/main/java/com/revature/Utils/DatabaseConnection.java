@@ -3,10 +3,10 @@ package com.revature.Utils;
 import java.sql.*;
 
 public class DatabaseConnection {
-
+    private static DatabaseConnection db = null;
     private Connection connection;
 
-    public DatabaseConnection() {
+    private DatabaseConnection() {
         String URL = System.getenv("AZ_DATABASE_NAME");
         String USER = System.getenv("AZ_SQL_SERVER_USERNAME");
         String PASS = System.getenv("AZ_SQL_SERVER_PASSWORD");
@@ -22,6 +22,13 @@ public class DatabaseConnection {
             System.err.println("Could not connect");
             e.printStackTrace();
         }
+    }
+
+    public static DatabaseConnection getConnection(){
+        if(db == null){
+            db = new DatabaseConnection();
+        }
+        return db;
     }
 
     public Boolean submitSQL(String sqlString, String... Values) {
@@ -67,8 +74,10 @@ public class DatabaseConnection {
     }
 
     public void close() {
+        db = null;
         try {
             connection.close();
+
         } catch (SQLException e) {
             System.out.println("The connection could not be closed");
             e.printStackTrace();

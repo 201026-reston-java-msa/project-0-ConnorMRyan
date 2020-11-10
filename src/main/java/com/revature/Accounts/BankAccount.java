@@ -16,7 +16,7 @@ public class BankAccount {
     public BankAccount(int ID){
         try {
             String AccountSQL = "SELECT * FROM Accounts.Checking WHERE CheckingID = ?";
-            DatabaseConnection db = new DatabaseConnection();
+            DatabaseConnection db = DatabaseConnection.getConnection();
             ResultSet rs = db.getResult(AccountSQL, Integer.toString(ID));
             rs.next();
             Banker = rs.getInt("Banker");

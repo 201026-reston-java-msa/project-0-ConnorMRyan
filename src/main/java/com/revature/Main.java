@@ -9,9 +9,9 @@ import java.sql.SQLException;
 
 public class Main {
     public static void main(String[] args) throws SQLException {
-        Customer customer = new Customer();
-        CreateBankAccount ba = new CreateBankAccount();
-        CreateBankAccount ba2 = new CreateBankAccount();
+        //CreateCustomer customer = new CreateCustomer();
+        CreateBanker.createBanker();
+
 
 
     }

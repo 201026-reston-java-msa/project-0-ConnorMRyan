@@ -7,7 +7,7 @@ import java.sql.SQLException;
 import java.util.Scanner;
 
 public class EditCustomer{
-    DatabaseConnection db = new DatabaseConnection();
+    DatabaseConnection db =  DatabaseConnection.getConnection();
     Scanner in = new Scanner(System.in);
     private String username;
     private int ID;
