@@ -1,13 +1,15 @@
 package com.revature.Users;
 
+import com.revature.Utils.DatabaseConnection;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Scanner;
 
-public class EditCustomer implements UsersMethods {
+public class EditCustomer{
+    DatabaseConnection db = new DatabaseConnection();
     Scanner in = new Scanner(System.in);
     private String username;
-
     private int ID;
     private String email;
     private String address; // Should replace this with an address table.
@@ -76,7 +78,7 @@ public class EditCustomer implements UsersMethods {
         String updateEmail = in.nextLine();
         int count = 0;
         try {
-            count = getCount("Email", updateEmail);
+            count = db.getCount("Users.Customer","Email", updateEmail);
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }

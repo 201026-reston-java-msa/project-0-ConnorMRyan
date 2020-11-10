@@ -29,7 +29,9 @@ public class Banker {
         }
         return accountsList;
     }
-    void getAccountDetails(){
+    void getAccountDetails(BankAccount ba){
+        System.out.println("---------------------");
+        System.out.println("Primary Owner");
 
     }
 }

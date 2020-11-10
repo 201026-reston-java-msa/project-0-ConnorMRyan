@@ -60,5 +60,20 @@ public class DatabaseConnection {
         }
     }
 
+    public int getCount(String tableName,String columnName, String value) throws SQLException {
+        ResultSet rs = this.getResult(String.format("SELECT COUNT(*) FROM %s WHERE %s = ?;",tableName,columnName),value);
+        rs.next();
+        return rs.getInt("");
+    }
+
+    public void close() {
+        try {
+            connection.close();
+        } catch (SQLException e) {
+            System.out.println("The connection could not be closed");
+            e.printStackTrace();
+        }
+    }
+
 
 }

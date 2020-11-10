@@ -1,17 +1,22 @@
 package com.revature.Users;
 
+import com.revature.Accounts.BankAccount;
+import com.revature.Utils.DatabaseConnection;
 import com.revature.Utils.PasswordEncoder;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
-public class Customer extends User implements UsersMethods {
+public class Customer extends User {
     Scanner in = new Scanner(System.in);
+    DatabaseConnection db;
     private String username;
     private int ID;
     public Customer(){
-
+        db = new DatabaseConnection();
     }
 
     @Override
@@ -104,5 +109,32 @@ public class Customer extends User implements UsersMethods {
 
     public int getID(){
         return this.ID;
+    }
+
+    List<BankAccount> getAccounts(){
+        try {
+            List<BankAccount> baList = new ArrayList<>();
+            ArrayList<Integer> ownershipIDs = new ArrayList<>();
+            String SQL = "SELECT * FROM Various.AccountOwners WHERE SecondaryAccount = ? OR PrimaryAccount = ?";
+            ResultSet rs = db.getResult(SQL, "" + ID, "" + ID);
+
+            while (rs.next()) {
+                ownershipIDs.add(rs.getInt("OwnershipID"));
+            }
+
+            for (Integer inty :
+                    ownershipIDs) {
+                String accountSQL = "SELECT CheckingID FROM Accounts.Checking WHERE OwnersID = ? AND Banker IS NOT NULL";
+                ResultSet qs = db.getResult(accountSQL, "" + inty);
+                while (qs.next()) {
+                    baList.add(new BankAccount(qs.getInt("CheckingID")));
+                }
+                return baList;
+
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
     }
 }

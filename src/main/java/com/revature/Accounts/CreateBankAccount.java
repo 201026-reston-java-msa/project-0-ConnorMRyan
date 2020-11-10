@@ -24,6 +24,7 @@ public class CreateBankAccount {
         deployToOwnershipDB();
         OwnershipID = getOwnershipID();
         deployToAccountDB();
+        printExitStatement();
     }
 
     private void printExitStatement(){

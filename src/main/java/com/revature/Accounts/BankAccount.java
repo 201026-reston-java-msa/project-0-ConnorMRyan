@@ -1,5 +1,6 @@
 package com.revature.Accounts;
 
+import com.revature.Users.Customer;
 import com.revature.Utils.DatabaseConnection;
 
 import java.sql.PreparedStatement;
