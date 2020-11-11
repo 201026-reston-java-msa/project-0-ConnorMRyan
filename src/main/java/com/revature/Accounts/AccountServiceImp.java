@@ -30,9 +30,9 @@ public class AccountServiceImp implements AccountService {
             int initialAmount = getBalance(ba);
 
             if (initialAmount - amount >= 0) {
-                String SQLupdateAmt = "UPDATE Accounts.Checking SET Balance = ?";
+                String SQLupdateAmt = "UPDATE Accounts.Checking SET Balance = ? WHERE CheckingID = ?";
                 int newAmount = initialAmount - amount;
-                DatabaseConnection.getConnection().submitSQL(SQLupdateAmt, "" + newAmount);
+                DatabaseConnection.getConnection().submitSQL(SQLupdateAmt, ""+newAmount,""+ba.accountID);
             }else{
                 throw new WithdrawException();
             }
@@ -47,9 +47,9 @@ public class AccountServiceImp implements AccountService {
         try {
             int initialAmount= getBalance(ba);
 
-            String SQLupdateAmt = "UPDATE Accounts.Checking SET Balance = ?";
+            String SQLupdateAmt = "UPDATE Accounts.Checking SET Balance = ? WHERE CheckingID = ?";
             int newAmount = initialAmount + amount;
-            DatabaseConnection.getConnection().submitSQL(SQLupdateAmt, "" + newAmount);
+            DatabaseConnection.getConnection().submitSQL(SQLupdateAmt, "" + newAmount,""+ba.getAccountID());
 
         } catch (Exception e) {
             logger.trace(e.getMessage());

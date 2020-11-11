@@ -92,10 +92,15 @@ public class DatabaseConnection {
     }
 
     public static Savepoint setSavePoint(String savepoint) throws SQLException {
-    return connection.setSavepoint(savepoint);
+        connection.setAutoCommit(false);
+        Savepoint s1 = connection.setSavepoint("savepoint");
+        connection.setAutoCommit(true);
+    return s1;
     }
 
     public static void rollback(Savepoint savepoint) throws SQLException{
+        connection.setAutoCommit(false);
         connection.rollback(savepoint);
+        connection.setAutoCommit(true);
     }
 }

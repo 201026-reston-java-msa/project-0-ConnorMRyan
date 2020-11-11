@@ -99,7 +99,7 @@ public class CreateCustomer {
         return new PasswordEncoder().confirmPass(in.nextLine(), password);
     }
 
-    public static void deployToDB() {
+    private static void deployToDB() {
         String SQL = "INSERT INTO Users.Customer\n" +
                 "        (Username, Password, Email, Name, Phone, Address) VALUES (?,?,?,?,?,?)";
         if (verifyPassword()) {

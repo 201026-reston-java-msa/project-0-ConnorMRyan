@@ -2,15 +2,23 @@ package com.revature.Users;
 
 import com.revature.Accounts.BankAccount;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Customer extends User implements UserService {
+    Logger logger = LogManager.getLogger(Customer.class);
     public Customer(){
         table = "Users.Customer";
     }
+    public Customer(int ID){
+        this.ID = ID;
+        table = "Users.Customer";
+    }
+
     @Override
     public List<BankAccount> getAccounts(){
         List<BankAccount> baList = new ArrayList<>();
