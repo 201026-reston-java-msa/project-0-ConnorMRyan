@@ -1,6 +1,8 @@
 package com.revature.Accounts;
 
+import com.revature.Utils.BalanceException;
 import com.revature.Utils.DatabaseConnection;
+import com.revature.Utils.WithdrawException;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
@@ -11,17 +13,28 @@ public class AccountServiceImp implements AccountService {
 
 
     @Override
-    public void withdraw(BankAccount ba, int amount) {
+    public  int getBalance(BankAccount ba)throws BalanceException {
+        try{
+        String SQLinitAmt = "SELECT Balance FROM Accounts.Checking WHERE CheckingID = ?";
+        ResultSet rs = DatabaseConnection.getConnection().getResult(SQLinitAmt, "" + ba.accountID);
+        rs.next();
+        return rs.getInt("Balance");
+        }catch (SQLException e){
+            throw new BalanceException();
+        }
+    }
+
+    @Override
+    public  void withdraw(BankAccount ba, int amount) {
         try {
-            int initialAmount;
-            String SQLinitAmt = "SELECT Balance FROM Accounts.Checking WHERE CheckingID = ?";
-            ResultSet rs = DatabaseConnection.getConnection().getResult(SQLinitAmt, "" + ba.accountID);
-            rs.next();
-            initialAmount = rs.getInt("Balance");
-            if (initialAmount - amount > 0) {
+            int initialAmount = getBalance(ba);
+
+            if (initialAmount - amount >= 0) {
                 String SQLupdateAmt = "UPDATE Accounts.Checking SET Balance = ?";
                 int newAmount = initialAmount - amount;
                 DatabaseConnection.getConnection().submitSQL(SQLupdateAmt, "" + newAmount);
+            }else{
+                throw new WithdrawException();
             }
 
         } catch (Exception e) {
@@ -30,13 +43,9 @@ public class AccountServiceImp implements AccountService {
     }
 
     @Override
-    public void deposit(BankAccount ba, int amount) {
+    public  void deposit(BankAccount ba, int amount) {
         try {
-            int initialAmount;
-            String SQLinitAmt = "SELECT Balance FROM Accounts.Checking WHERE CheckingID = ?";
-            ResultSet rs = DatabaseConnection.getConnection().getResult(SQLinitAmt, "" + ba.accountID);
-            rs.next();
-            initialAmount = rs.getInt("Balance");
+            int initialAmount= getBalance(ba);
 
             String SQLupdateAmt = "UPDATE Accounts.Checking SET Balance = ?";
             int newAmount = initialAmount + amount;

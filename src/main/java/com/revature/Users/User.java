@@ -1,10 +1,12 @@
 package com.revature.Users;
 
+import com.revature.Accounts.BankAccount;
 import com.revature.Utils.DatabaseConnection;
 import com.revature.Utils.PasswordEncoder;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Scanner;
 
 public abstract class User {

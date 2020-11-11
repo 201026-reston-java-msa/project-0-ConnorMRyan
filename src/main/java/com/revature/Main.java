@@ -9,10 +9,11 @@ import java.sql.SQLException;
 
 public class Main {
     public static void main(String[] args) throws SQLException {
-        Banker ba = new Banker();
-        ba.displayAccounts(ba.getAccountsToVerify());
-
-
+        CreateBankAccount.CreateAccount();
+        new Banker().verifyAccounts(new Banker().getAccountsToVerify());
+        Customer customer = new Customer();
+        customer.logIn();
+        customer.displayAccounts(customer.getAccounts());
 
     }
 }

@@ -3,6 +3,7 @@ package com.revature.Users;
 import com.revature.Accounts.BankAccount;
 
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,9 +13,11 @@ public class Customer extends User implements UserService {
     }
     @Override
     public List<BankAccount> getAccounts(){
+        List<BankAccount> baList = new ArrayList<>();
+        ArrayList<Integer> ownershipIDs = new ArrayList<>();
         try {
-            List<BankAccount> baList = new ArrayList<>();
-            ArrayList<Integer> ownershipIDs = new ArrayList<>();
+
+
             String SQL = "SELECT * FROM Various.AccountOwners WHERE SecondaryAccount = ? OR PrimaryAccount = ?";
             ResultSet rs = db.getResult(SQL, "" + ID, "" + ID);
 
@@ -22,19 +25,18 @@ public class Customer extends User implements UserService {
                 ownershipIDs.add(rs.getInt("OwnershipID"));
             }
 
-            for (Integer inty :
+            for (Integer ownerID :
                     ownershipIDs) {
-                String accountSQL = "SELECT CheckingID FROM Accounts.Checking WHERE OwnersID = ? AND Banker IS NOT NULL";
-                ResultSet qs = db.getResult(accountSQL, "" + inty);
+                String accountSQL = "SELECT CheckingID FROM Accounts.Checking WHERE OwnersID = ? AND Banker != -1";
+                ResultSet qs = db.getResult(accountSQL, ""+ownerID);
                 while (qs.next()) {
                     baList.add(new BankAccount(qs.getInt("CheckingID")));
                 }
-                return baList;
             }
         }catch (Exception e){
             e.printStackTrace();
         }
-        return null;
+        return baList;
     }
 
 }

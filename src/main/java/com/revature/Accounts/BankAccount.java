@@ -71,11 +71,14 @@ public class BankAccount {
         if(this.getSecondaryAccountID() != -1){
             System.out.println("Secondary Owner ID: " + this.getSecondaryAccountID());
         }
-        System.out.println("Balance : " + this.getBalance());
+        System.out.printf("Balance : %.2f $\n", (double) this.getBalance()/100);
         if(banker == -1){
             System.out.println("This account has not yet been verified");
         }else{
             System.out.println("BankerID : " + banker);
         }
+        System.out.println("---------------------\n");
+
+
     }
 }

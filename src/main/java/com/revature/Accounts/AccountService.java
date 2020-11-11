@@ -1,14 +1,19 @@
 package com.revature.Accounts;
 
+import com.revature.Utils.BalanceException;
+import com.revature.Utils.WithdrawException;
+
 import java.sql.SQLException;
 
 public interface AccountService {
 
-    void withdraw(BankAccount ba ,int amount);
+     int getBalance(BankAccount ba) throws BalanceException;
 
-    void deposit(BankAccount ba ,int amount);
+     void withdraw(BankAccount ba, int amount) throws WithdrawException;
 
-    void transfer(BankAccount transferFrom,BankAccount transferTo,int amount) throws SQLException;
+     void deposit(BankAccount ba ,int amount);
+
+    void transfer(BankAccount transferFrom,BankAccount transferTo,int amount) throws SQLException,WithdrawException;
 
 
 }
