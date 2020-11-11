@@ -1,34 +1,34 @@
 package com.revature.Accounts;
 
-import com.revature.Users.Customer;
 import com.revature.Utils.DatabaseConnection;
 
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
 public class BankAccount {
-    int OwnersID;
-    int PrimaryAccountID;
-    int SecondaryAccountID;
-    int Banker;
-    int Balance;
-    int RoutingNo;
+    int accountID;
+    int ownersID;
+    int primaryAccountID;
+    int secondaryAccountID;
+    int banker;
+    int balance;
+    int routingNo;
     public BankAccount(int ID){
         try {
             String AccountSQL = "SELECT * FROM Accounts.Checking WHERE CheckingID = ?";
             DatabaseConnection db = DatabaseConnection.getConnection();
             ResultSet rs = db.getResult(AccountSQL, Integer.toString(ID));
             rs.next();
-            Banker = rs.getInt("Banker");
-            Balance = rs.getInt("Balance");
-            RoutingNo = rs.getInt("RoutingNo");
-            OwnersID = rs.getInt("OwnersID");
+            accountID = rs.getInt("CheckingID");
+            banker = rs.getInt("Banker");
+            balance = rs.getInt("Balance");
+            routingNo = rs.getInt("RoutingNo");
+            ownersID = rs.getInt("OwnersID");
             rs.close();
             String OwnerSQL = "SELECT * FROM Various.AccountOwners WHERE OwnershipID = ?";
-            ResultSet qs = db.getResult(OwnerSQL,Integer.toString(OwnersID));
+            ResultSet qs = db.getResult(OwnerSQL,Integer.toString(ownersID));
             qs.next();
-            PrimaryAccountID = qs.getInt("PrimaryAccount");
-            SecondaryAccountID = qs.getInt("SecondaryAccount");
+            primaryAccountID = qs.getInt("PrimaryAccount");
+            secondaryAccountID = qs.getInt("SecondaryAccount");
             qs.close();
         }catch (Exception e){
 
@@ -37,26 +37,45 @@ public class BankAccount {
     }
 
     public int getOwnersID() {
-        return OwnersID;
+        return ownersID;
     }
 
     public int getPrimaryAccountID() {
-        return PrimaryAccountID;
+        return primaryAccountID;
     }
 
     public int getSecondaryAccountID() {
-        return SecondaryAccountID;
+        return secondaryAccountID;
     }
 
     public int getBanker() {
-        return Banker;
+        return banker;
     }
 
     public int getBalance() {
-        return Balance;
+        return balance;
     }
 
     public int getRoutingNo() {
-        return RoutingNo;
+        return routingNo;
+    }
+
+    public int getAccountID() {
+        return accountID;
+    }
+
+    public void getAccountDetails(){
+        System.out.println("---------------------");
+        System.out.println("Account ID : " + this.getAccountID());
+        System.out.println("Primary Owner ID : " +this.getPrimaryAccountID());
+        if(this.getSecondaryAccountID() != -1){
+            System.out.println("Secondary Owner ID: " + this.getSecondaryAccountID());
+        }
+        System.out.println("Balance : " + this.getBalance());
+        if(banker == -1){
+            System.out.println("This account has not yet been verified");
+        }else{
+            System.out.println("BankerID : " + banker);
+        }
     }
 }

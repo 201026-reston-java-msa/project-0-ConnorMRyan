@@ -9,17 +9,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-public class Banker {
-    DatabaseConnection db = DatabaseConnection.getConnection();
-    Scanner in = new Scanner(System.in);
-    int ID;
+public class Banker extends User implements UserService {
     public Banker(){
+        table = "Users.Banker";
     }
 
     public void verifyAccounts(List<BankAccount> accountList){
         for (BankAccount account:
              accountList) {
-            getAccountDetails(account);
+            account.getAccountDetails();
             if(approveAccount()){
                 String SQL = "UPDATE Accounts.Checking SET Banker = ?";
                 db.submitSQL(SQL,""+ID);
@@ -28,7 +26,7 @@ public class Banker {
     }
     public List<BankAccount> getAccountsToVerify(){
         ArrayList accountsList = new ArrayList<BankAccount>();
-        String SQL = "SELECT * FROM Accounts.Checking where Banker IS NULL;";
+        String SQL = "SELECT * FROM Accounts.Checking where Banker = -1;";
         ResultSet rs = db.getResult(SQL);
         try {
             while(rs.next()){
@@ -41,16 +39,14 @@ public class Banker {
         }
         return accountsList;
     }
-    void getAccountDetails(BankAccount ba){
-        System.out.println("---------------------");
-        System.out.println("Primary Owner ID : " +ba.getPrimaryAccountID());
-        if(ba.getSecondaryAccountID() != -1){
-            System.out.println("Secondary Owner ID: " + ba.getSecondaryAccountID());
-        }
-        System.out.println("Balance : " + ba.getBalance());
-    }
+
     boolean approveAccount(){
         System.out.println("Would you like to approve the account? [Y/n]");
         return in.nextLine().toUpperCase().charAt(0) == 'Y';
+    }
+
+    @Override
+    public List<BankAccount> getAccounts() {
+        return null;
     }
 }

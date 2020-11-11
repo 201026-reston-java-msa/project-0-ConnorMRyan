@@ -1,10 +1,16 @@
 package com.revature.Utils;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+
+import java.net.Inet4Address;
 import java.sql.*;
+import java.util.ArrayList;
 
 public class DatabaseConnection {
     private static DatabaseConnection db = null;
-    private Connection connection;
+    private static Connection connection;
+    private static final Logger logger = LogManager.getLogger(DatabaseConnection.class);
 
     private DatabaseConnection() {
         String URL = System.getenv("AZ_DATABASE_NAME");
@@ -14,7 +20,7 @@ public class DatabaseConnection {
         String connectionUrl = "jdbc:sqlserver://" + URL + ":" + PORT + ";database=bankstuff;user=" + USER + ";password=" + PASS + ";encrypt=true;trustServerCertificate=false;hostNameInCertificate=*.database.windows.net;loginTimeout=30";
         System.out.print("Connecting to SQL Server ... ");
         try {
-            this.connection = DriverManager.getConnection(connectionUrl);
+            connection = DriverManager.getConnection(connectionUrl);
 
             System.out.println("Done.");
 
@@ -27,6 +33,7 @@ public class DatabaseConnection {
     public static DatabaseConnection getConnection(){
         if(db == null){
             db = new DatabaseConnection();
+            logger.trace("A new database connection was created ");
         }
         return db;
     }
@@ -84,5 +91,11 @@ public class DatabaseConnection {
         }
     }
 
+    public static Savepoint setSavePoint(String savepoint) throws SQLException {
+    return connection.setSavepoint(savepoint);
+    }
 
+    public static void rollback(Savepoint savepoint) throws SQLException{
+        connection.rollback(savepoint);
+    }
 }

@@ -41,7 +41,6 @@ public class CreateBanker {
         System.out.println("Is the user a manager?");
         isManager = in.nextLine().toUpperCase().charAt(0) == 'Y';
     }
-
     private static void setUsername() {
         if(isManager){
             username = "BankManager"+name;

@@ -19,9 +19,7 @@ public class CreateCustomer {
     static private String name;
     static private final String TABLE = "Users.Customer";
 
-     public CreateCustomer() {
-     }
-     static void createCustomer(){
+    public static void createCustomer(){
          db = DatabaseConnection.getConnection();
          in = new Scanner(System.in);
          username = getUsername();
