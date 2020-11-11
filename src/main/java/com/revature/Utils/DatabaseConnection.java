@@ -3,16 +3,14 @@ package com.revature.Utils;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
-import java.net.Inet4Address;
 import java.sql.*;
-import java.util.ArrayList;
 
 public class DatabaseConnection {
+    private static final Logger logger = LogManager.getLogger(DatabaseConnection.class);
     private static DatabaseConnection db = null;
     private static Connection connection;
-    private static final Logger logger = LogManager.getLogger(DatabaseConnection.class);
 
-    private DatabaseConnection() {
+    public DatabaseConnection() {
         String URL = System.getenv("AZ_DATABASE_NAME");
         String USER = System.getenv("AZ_SQL_SERVER_USERNAME");
         String PASS = System.getenv("AZ_SQL_SERVER_PASSWORD");
@@ -30,12 +28,29 @@ public class DatabaseConnection {
         }
     }
 
-    public static DatabaseConnection getConnection(){
-        if(db == null){
+    public static DatabaseConnection getConnection() {
+        if (db == null) {
             db = new DatabaseConnection();
             logger.trace("A new database connection was created ");
         }
         return db;
+    }
+
+    public static Savepoint setSavePoint(String savepoint) throws SQLException {
+        connection.setAutoCommit(false);
+        Savepoint s1 = connection.setSavepoint("savepoint");
+        connection.setAutoCommit(true);
+        return s1;
+    }
+
+    public static void rollback(Savepoint savepoint) throws SQLException {
+        connection.setAutoCommit(false);
+        connection.rollback(savepoint);
+        connection.setAutoCommit(true);
+    }
+
+    public static void deleteSavePoint(Savepoint savepoint) throws SQLException {
+        connection.releaseSavepoint(savepoint);
     }
 
     public Boolean submitSQL(String sqlString, String... Values) {
@@ -74,8 +89,8 @@ public class DatabaseConnection {
         }
     }
 
-    public int getCount(String tableName,String columnName, String value) throws SQLException {
-        ResultSet rs = this.getResult(String.format("SELECT COUNT(*) FROM %s WHERE %s = ?;",tableName,columnName),value);
+    public int getCount(String tableName, String columnName, String value) throws SQLException {
+        ResultSet rs = this.getResult(String.format("SELECT COUNT(*) FROM %s WHERE %s = ?;", tableName, columnName), value);
         rs.next();
         return rs.getInt("");
     }
@@ -91,16 +106,7 @@ public class DatabaseConnection {
         }
     }
 
-    public static Savepoint setSavePoint(String savepoint) throws SQLException {
-        connection.setAutoCommit(false);
-        Savepoint s1 = connection.setSavepoint("savepoint");
-        connection.setAutoCommit(true);
-    return s1;
-    }
-
-    public static void rollback(Savepoint savepoint) throws SQLException{
-        connection.setAutoCommit(false);
-        connection.rollback(savepoint);
-        connection.setAutoCommit(true);
+    public boolean hasConnection(){
+        return (connection != null);
     }
 }

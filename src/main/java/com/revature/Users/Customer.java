@@ -1,7 +1,6 @@
 package com.revature.Users;
 
 import com.revature.Accounts.BankAccount;
-
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
@@ -11,16 +10,18 @@ import java.util.List;
 
 public class Customer extends User implements UserService {
     Logger logger = LogManager.getLogger(Customer.class);
-    public Customer(){
+
+    public Customer() {
         table = "Users.Customer";
     }
-    public Customer(int ID){
+
+    public Customer(int ID) {
         this.ID = ID;
         table = "Users.Customer";
     }
 
     @Override
-    public List<BankAccount> getAccounts(){
+    public List<BankAccount> getAccounts() {
         List<BankAccount> baList = new ArrayList<>();
         ArrayList<Integer> ownershipIDs = new ArrayList<>();
         try {
@@ -36,12 +37,12 @@ public class Customer extends User implements UserService {
             for (Integer ownerID :
                     ownershipIDs) {
                 String accountSQL = "SELECT CheckingID FROM Accounts.Checking WHERE OwnersID = ? AND Banker != -1";
-                ResultSet qs = db.getResult(accountSQL, ""+ownerID);
+                ResultSet qs = db.getResult(accountSQL, "" + ownerID);
                 while (qs.next()) {
                     baList.add(new BankAccount(qs.getInt("CheckingID")));
                 }
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return baList;

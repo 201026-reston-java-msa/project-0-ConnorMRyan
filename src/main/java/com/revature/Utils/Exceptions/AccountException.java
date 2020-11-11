@@ -1,9 +1,7 @@
-package com.revature.Utils;
-
-import com.revature.Accounts.AccountService;
+package com.revature.Utils.Exceptions;
 
 public class AccountException extends Exception {
-    AccountException(){
+    AccountException() {
         super("Sorry, that account does not exist.");
     }
 }

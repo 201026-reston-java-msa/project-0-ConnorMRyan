@@ -1,6 +1,6 @@
 package com.revature.Users;
 
-import com.revature.Utils.Address;
+import com.revature.Utils.Adresses.Address;
 import com.revature.Utils.DatabaseConnection;
 import com.revature.Utils.PasswordEncoder;
 
@@ -17,7 +17,7 @@ public class CreateBanker {
     static boolean isManager = false;
 
     static private void setName() {
-        System.out.println("What is your name?" );
+        System.out.println("What is your name?");
         name = in.nextLine();
     }
 
@@ -28,7 +28,7 @@ public class CreateBanker {
     }
 
     static private void setAddress() {
-        address = new Address().getID();
+        address = new Address(System.in).getID();
     }
 
     static private void setSalary() {
@@ -41,34 +41,37 @@ public class CreateBanker {
         System.out.println("Is the user a manager?");
         isManager = in.nextLine().toUpperCase().charAt(0) == 'Y';
     }
+
     private static void setUsername() {
-        if(isManager){
-            username = "BankManager"+name;
-        }else{
-            username = "BankUser"+name;
+        if (isManager) {
+            username = "BankManager" + name;
+        } else {
+            username = "BankUser" + name;
         }
     }
-    static private void deployToDB(){
-        String SQL = "INSERT INTO Users.Banker (Username,Password,Salary,Name,Address,isManager)"+
+
+    static private void deployToDB() {
+        String SQL = "INSERT INTO Users.Banker (Username,Password,Salary,Name,Address,isManager)" +
                 "VALUES (?,?,?,?,?,?)";
         if (verifyPassword()) {
-            db.submitSQL(SQL, username, password, Double.toString(salary), name, ""+address,""+isManager);
+            db.submitSQL(SQL, username, password, Double.toString(salary), name, "" + address, "" + isManager);
         } else {
             System.out.println("Sorry, that password was not correct, or something else failed.");
         }
     }
+
     private static boolean verifyPassword() {
         System.out.println("-----------");
         System.out.println("Please confirm your password to complete the registration");
         return new PasswordEncoder().confirmPass(in.nextLine(), password);
     }
 
-    private static void printUsername(){
-        System.out.println("Your username is "+username);
+    private static void printUsername() {
+        System.out.println("Your username is " + username);
     }
 
 
-    public static void createBanker(){
+    public static void createBanker() {
         db = DatabaseConnection.getConnection();
         in = new Scanner(System.in);
         setName();

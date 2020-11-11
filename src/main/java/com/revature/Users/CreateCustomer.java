@@ -1,7 +1,7 @@
 package com.revature.Users;
 
 
-import com.revature.Utils.Address;
+import com.revature.Utils.Adresses.Address;
 import com.revature.Utils.DatabaseConnection;
 import com.revature.Utils.PasswordEncoder;
 
@@ -9,6 +9,7 @@ import java.sql.SQLException;
 import java.util.Scanner;
 
 public class CreateCustomer {
+    static private final String TABLE = "Users.Customer";
     static DatabaseConnection db;
     static Scanner in;
     static private String username;
@@ -17,20 +18,19 @@ public class CreateCustomer {
     static private String phone;
     static private int address;
     static private String name;
-    static private final String TABLE = "Users.Customer";
 
-    public static void createCustomer(){
-         db = DatabaseConnection.getConnection();
-         in = new Scanner(System.in);
-         username = getUsername();
-         password = getPassword();
-         email = getEmailAddress();
-         name = getName();
-         phone = getPhone();
-         address = getAddress();
-         deployToDB();
+    public static void createCustomer() {
+        db = DatabaseConnection.getConnection();
+        in = new Scanner(System.in);
+        username = getUsername();
+        password = getPassword();
+        email = getEmailAddress();
+        name = getName();
+        phone = getPhone();
+        address = getAddress();
+        deployToDB();
 
-     }
+    }
 
     private static String getUsername() {
         System.out.println("------------");
@@ -66,8 +66,8 @@ public class CreateCustomer {
 
     private static int getAddress() {
         System.out.println("------------");
-        return new Address().getID();
-     }
+        return new Address(System.in).getID();
+    }
 
     private static String getName() {
         System.out.println("------------");
@@ -103,7 +103,7 @@ public class CreateCustomer {
         String SQL = "INSERT INTO Users.Customer\n" +
                 "        (Username, Password, Email, Name, Phone, Address) VALUES (?,?,?,?,?,?)";
         if (verifyPassword()) {
-            db.submitSQL(SQL, username, password, email, name, phone, ""+address);
+            db.submitSQL(SQL, username, password, email, name, phone, "" + address);
         } else {
             System.out.println("Sorry, that password was not correct, or something else failed.");
         }

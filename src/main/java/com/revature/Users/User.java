@@ -1,12 +1,12 @@
 package com.revature.Users;
 
-import com.revature.Accounts.BankAccount;
 import com.revature.Utils.DatabaseConnection;
 import com.revature.Utils.PasswordEncoder;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.List;
 import java.util.Scanner;
 
 public abstract class User {
@@ -16,6 +16,7 @@ public abstract class User {
     String userName;
     String table;
     boolean isLoggedIn = false;
+    Logger logger = LogManager.getLogger(User.class);
 
     public boolean logIn() {
         getUsername();
@@ -29,7 +30,7 @@ public abstract class User {
                 }
             }
         }
-        System.out.println("Sorry, there was an error with your login request.");
+        logger.trace("User " + userName + " tried to log in with an invalid password");
         return false;
     }
 

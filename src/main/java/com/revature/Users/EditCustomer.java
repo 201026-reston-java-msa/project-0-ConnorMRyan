@@ -6,8 +6,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Scanner;
 
-public class EditCustomer{
-    DatabaseConnection db =  DatabaseConnection.getConnection();
+public class EditCustomer {
+    DatabaseConnection db = DatabaseConnection.getConnection();
     Scanner in = new Scanner(System.in);
     private String username;
     private int ID;
@@ -78,7 +78,7 @@ public class EditCustomer{
         String updateEmail = in.nextLine();
         int count = 0;
         try {
-            count = db.getCount("Users.Customer","Email", updateEmail);
+            count = db.getCount("Users.Customer", "Email", updateEmail);
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }

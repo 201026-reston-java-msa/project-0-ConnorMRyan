@@ -1,17 +1,21 @@
-package com.revature.Utils;
+package com.revature.Utils.Adresses;
 
 
+import com.revature.Utils.DatabaseConnection;
 import org.json.simple.JSONObject;
 import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+import java.io.InputStream;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Scanner;
 
 public class Address {
+    final String TABLENAME = "Various.Address";
+    InputStream inputStream;
     Scanner in = new Scanner(System.in);
     int ID;
     int streetNumber;
@@ -21,10 +25,14 @@ public class Address {
     String country;
     String state;
     DatabaseConnection db;
-    final String TABLENAME = "Various.Address";
 
 
-    public Address() {
+    public Address(InputStream is) {
+        if (is == null) {
+            inputStream = System.in;
+        } else {
+            inputStream = is;
+        }
         try {
             this.db = DatabaseConnection.getConnection();
             setPostalCode();
@@ -43,10 +51,10 @@ public class Address {
             city = (String) qs.get("city");
             state = (String) qs.get("state");
             setCountry();
-            if(isCorrectAddress()) {
+            if (isCorrectAddress()) {
                 deployToDB();
                 setID();
-            }else{
+            } else {
                 setCity();
                 setState();
                 deployToDB();
@@ -57,7 +65,7 @@ public class Address {
         }
     }
 
-    public boolean isCorrectAddress(){
+    public boolean isCorrectAddress() {
         System.out.println("Is this your address?: [Y/n]");
         System.out.println(this.toString());
         return in.nextLine().toUpperCase().charAt(0) == 'Y';
@@ -67,13 +75,13 @@ public class Address {
         return ID;
     }
 
-    boolean isUniqueAddress(){
+    boolean isUniqueAddress() {
         try {
             String SQL = "SELECT COUNT(ID) FROM Various.Address WHERE Street_Number = ? AND Street_Name = ? AND Postal_Code = ? ";
             ResultSet rs = db.getResult(SQL, "" + streetNumber, streetName, postalCode);
             rs.next();
             return (rs.getInt("") == 0);
-        }catch (SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
             return false;
         }
@@ -85,7 +93,7 @@ public class Address {
             ResultSet rs = db.getResult(SQL, "" + streetNumber, streetName, postalCode);
             rs.next();
             ID = rs.getInt("ID");
-        }catch (SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
         }
 
@@ -136,19 +144,15 @@ public class Address {
     }
 
     public String getState() {
-
-
         return state;
-
-
     }
 
     public void setState() {
         this.state = in.nextLine();
     }
 
-    public void deployToDB(){
-        if(isUniqueAddress()) {
+    public void deployToDB() {
+        if (isUniqueAddress()) {
             String SQL = "INSERT INTO Various.Address (Street_Number,Street_Name,City,Postal_Code,State_Abr,Country)" +
                     " VALUES (?,?,?,?,?,?) ";
             db.submitSQL(SQL, Integer.toString(streetNumber), streetName, city, postalCode, state, country);
@@ -158,8 +162,8 @@ public class Address {
 
     @Override
     public String toString() {
-        return streetNumber +" "+ streetName + "\n" +
-                 city + ", " + state + "\n" +
+        return streetNumber + " " + streetName + "\n" +
+                city + ", " + state + "\n" +
                 postalCode + "\n" +
                 country + "\n";
     }
